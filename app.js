@@ -16,7 +16,17 @@ const messagesRoutes = require("./routes/messages.routes");
 const app = express();
 const server = http.createServer(app);
 
-// Création de la session
+// Configuration de base
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "pug");
+
+// Middleware de base
+app.use(morgan("short"));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Session et authentification
 const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -27,32 +37,24 @@ const sessionMiddleware = session({
   },
 });
 
-// Configuration de Socket.IO avec le middleware de session
+app.use(sessionMiddleware);
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Socket.IO avec configuration optimisée
 const io = socketIO(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
   },
+  transports: ["websocket", "polling"],
+  pingTimeout: 60000,
 });
+
 io.engine.use(sessionMiddleware);
 
-const port = process.env.PORT || 3000;
-
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
-
-app.use(morgan("short"));
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Utilisation du middleware de session
-app.use(sessionMiddleware);
-
-app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
-
+// Routes
 app.use((req, res, next) => {
   res.locals.user = req.user;
   res.locals.isAuthenticated = req.isAuthenticated();
@@ -66,21 +68,36 @@ app.use("/api", apiRouter);
 app.use("/auth", authRoutes);
 app.use("/messages", messagesRoutes);
 
-// Socket.IO connection handler
+// Gestion des erreurs
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
+
+// Socket.IO connection handler avec gestion d'erreur
 io.on("connection", (socket) => {
   console.log("Nouveau client connecté");
 
-  // Vérification de l'authentification via la session
-  const session = socket.request.session;
-  if (session && session.passport && session.passport.user) {
-    socket.join(session.passport.user);
-  }
+  try {
+    const session = socket.request.session;
+    if (session && session.passport && session.passport.user) {
+      socket.join(session.passport.user);
+    }
 
-  socket.on("disconnect", () => {
-    console.log("Client déconnecté");
-  });
+    socket.on("disconnect", () => {
+      console.log("Client déconnecté");
+    });
+  } catch (error) {
+    console.error("Erreur Socket.IO:", error);
+  }
 });
 
 app.set("io", io);
 
-server.listen(port);
+// Démarrage du serveur
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+  // Connexion à la base de données après le démarrage du serveur
+  require("./database");
+});
