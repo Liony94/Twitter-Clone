@@ -19,8 +19,8 @@ router.post("/new", async (req, res, next) => {
     );
 
     // Émettre le nouveau tweet à tous les clients connectés
-    const io = req.app.get("io");
-    io.emit("newTweet", {
+    const pusher = req.app.get("pusher");
+    pusher.trigger("twitter-clone", "newTweet", {
       ...populatedTweet.toJSON(),
       canDelete: true,
     });

@@ -119,9 +119,8 @@ router.post("/send", isAuthenticated, async (req, res, next) => {
       .populate("recipient", "username");
     console.log("Message peuplé:", populatedMessage);
 
-    // Émettre le message via Socket.IO
-    const io = req.app.get("io");
-    io.to(recipientId).emit("newMessage", populatedMessage);
+    const pusher = req.app.get("pusher");
+    pusher.trigger("twitter-clone", "newMessage", populatedMessage);
 
     res.json(populatedMessage);
   } catch (e) {
