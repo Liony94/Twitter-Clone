@@ -1,3 +1,9 @@
+require("dotenv").config();
+
+// Ajout des logs de debug
+console.log("SESSION_SECRET:", process.env.SESSION_SECRET);
+console.log("PUSHER_APP_ID:", process.env.PUSHER_APP_ID);
+
 const express = require("express");
 const path = require("path");
 const index = require("./routes");
