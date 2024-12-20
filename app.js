@@ -28,7 +28,12 @@ const sessionMiddleware = session({
 });
 
 // Configuration de Socket.IO avec le middleware de session
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 io.engine.use(sessionMiddleware);
 
 const port = process.env.PORT || 3000;
