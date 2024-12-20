@@ -1,49 +1,31 @@
-block content
-    .tweets-container
-        if tweets && tweets.length > 0
-            each tweet in tweets
-                .card.tweet-card.mb-3
-                    .card-body
-                        .d-flex
-                            img.rounded-circle.me-2(
-                                src=tweet.author.avatar || "https://via.placeholder.com/48"
-                                alt=`Photo de ${tweet.author.username}`
-                            )
-                            .tweet-content.w-100
-                                .d-flex.justify-content-between
-                                    .tweet-header
-                                        strong.me-2= tweet.author.displayName
-                                        span.text-muted @#{tweet.author.username}
-                                        span.text-muted.ms-2 · #{tweet.createdAt}
-                                    .dropdown
-                                        button.btn.btn-link.dropdown-toggle(
-                                            type="button"
-                                            data-bs-toggle="dropdown"
-                                        )
-                                            i.fas.fa-ellipsis-h
-                                        ul.dropdown-menu.dropdown-menu-end
-                                            li
-                                                a.dropdown-item(href=`/tweet/${tweet._id}`) Voir le tweet
-                                            if tweet.isAuthor
-                                                li
-                                                    a.dropdown-item.text-danger(
-                                                        href=`/tweet/${tweet._id}/delete`
-                                                    ) Supprimer
-                                p.card-text.mt-2= tweet.content
-                                .tweet-actions.mt-2
-                                    button.btn.btn-sm.me-3(title="Répondre")
-                                        i.far.fa-comment
-                                        span.ms-1= tweet.replies || 0
-                                    button.btn.btn-sm.me-3(title="Retweeter")
-                                        i.fas.fa-retweet
-                                        span.ms-1= tweet.retweets || 0
-                                    button.btn.btn-sm.me-3(title="J'aime")
-                                        i.far.fa-heart
-                                        span.ms-1= tweet.likes || 0
-                                    button.btn.btn-sm(title="Partager")
-                                        i.far.fa-share-square
-        else
-            .card
-                .card-body.text-center
-                    p.mb-0 Aucun tweet à afficher
-    
+.tweets-container.mt-3
+    if tweets && tweets.length > 0
+        each tweet in tweets
+            .card.tweet-card.mb-3
+                .card-body
+                    .d-flex
+                        img.rounded-circle.me-2(
+                            src="https://via.placeholder.com/48"
+                            alt="Photo de profil"
+                        )
+                        .tweet-content.w-100
+                            .d-flex.justify-content-between
+                                .tweet-header
+                                    strong.me-2 Utilisateur
+                                    span.text-muted · #{new Date(tweet.createdAt).toLocaleDateString()}
+                                if isAuthenticated && tweet.author && user._id.toString() === tweet.author.toString()
+                                    button.btn.btn-sm.text-danger.tweet-delete-btn(
+                                        data-tweet-id=tweet._id
+                                        title="Supprimer"
+                                    )
+                                        i.fa.fa-trash
+                            p.card-text.mt-2= tweet.content
+                            .tweet-actions.mt-2
+                                button.btn.btn-sm.me-3(title="Répondre")
+                                    i.far.fa-comment
+                                button.btn.btn-sm.me-3(title="J'aime")
+                                    i.far.fa-heart
+    else
+        .card
+            .card-body.text-center
+                p.mb-0 Aucun tweet à afficher

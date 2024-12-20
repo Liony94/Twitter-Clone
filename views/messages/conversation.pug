@@ -1,0 +1,28 @@
+extends ../layout.pug
+
+block content
+  .card
+    .card-header.bg-white.d-flex.align-items-center
+      a.btn.btn-link.me-3(href="/messages")
+        i.fas.fa-arrow-left
+      h4.mb-0= otherUser.username
+
+    .card-body.messages-container(style="height: 400px; overflow-y: auto;")
+      each message in messages
+        .message.mb-3(class=message.sender._id.toString() === currentUserId ? 'text-end' : '')
+          .message-bubble.d-inline-block.p-2.rounded(class=message.sender._id.toString() === currentUserId ? 'bg-primary text-white' : 'bg-light')
+            p.mb-1= message.content
+            small.text-muted= new Date(message.createdAt).toLocaleTimeString()
+
+    .card-footer.bg-white
+      form#messageForm.d-flex
+        input(type="hidden" name="recipientId" value=otherUser._id.toString())
+        .flex-grow-1.me-2
+          input.form-control(type="text" name="content" placeholder="Écrivez votre message..." required)
+        button.btn.btn-primary(type="submit")
+          i.fas.fa-paper-plane
+
+block scripts
+  script.
+    const currentUserId = '!{currentUserId}';
+  script(src="/js/messages.js") 

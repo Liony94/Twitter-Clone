@@ -1,7 +1,13 @@
-const router = require('express').Router();
+const router = require("express").Router();
+const Tweet = require("../database/models/tweet.model");
 
-router.get('/', (req, res) => {
-  res.render('home')
+router.get("/", async (req, res, next) => {
+  try {
+    const tweets = await Tweet.find({}).sort({ createdAt: -1 });
+    res.render("home", { tweets });
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;

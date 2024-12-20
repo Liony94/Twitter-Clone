@@ -1,12 +1,13 @@
 nav.navbar.navbar-expand-lg.navbar-light.bg-white.border-bottom
     .container-fluid
-        a.navbar-brand(href="/") 
-            i.fab.fa-twitter.text-primary
-        button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav")
-            span.navbar-toggler-icon
-        #navbarNav.collapse.navbar-collapse
-            ul.navbar-nav.ms-auto
-                li.nav-item
-                    a.nav-link(href="/login") Connexion
-                li.nav-item
-                    a.nav-link(href="/register") S'inscrire 
+        a.navbar-brand(href="/") Twitter
+        .navbar-nav.ms-auto
+            if isAuthenticated
+                a.nav-link.position-relative.me-3(href="/messages")
+                    i.fas.fa-envelope.fa-lg
+                    span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger.unread-messages-count
+                span.navbar-text.me-3 Bienvenue #{user.username}
+                a.btn.btn-outline-danger(href="/auth/signout") Déconnexion
+            else
+                a.btn.btn-outline-primary.me-2(href="/auth/signin") Connexion
+                a.btn.btn-primary(href="/auth/signup") Inscription
