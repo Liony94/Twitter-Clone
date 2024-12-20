@@ -1,0 +1,60 @@
+.profile-container
+    .profile-header
+        .profile-banner
+            img.w-100(
+                src="https://via.placeholder.com/1500x500"
+                alt="Bannière de profil"
+                style="height: 200px; object-fit: cover;"
+            )
+        .profile-avatar.position-relative
+            img.rounded-circle.border.border-4.border-white.position-absolute(
+                src="https://via.placeholder.com/150"
+                alt="Photo de profil"
+                style="width: 150px; height: 150px; top: -75px; left: 20px;"
+            )
+    
+    .profile-info.mt-5.p-3
+        .d-flex.justify-content-end.mb-3
+            button.btn.btn-primary.rounded-pill Suivre
+
+        h2.mb-1 John Doe
+        .text-muted.mb-3 @johndoe
+        
+        p.mb-3 Développeur passionné | Amateur de café | Toujours en train d'apprendre
+        
+        .profile-metadata.d-flex.mb-3
+            .me-3
+                i.fas.fa-map-marker-alt.me-1
+                span Paris, France
+            .me-3
+                i.fas.fa-link.me-1
+                a(href="https://example.com" target="_blank") example.com
+            .me-3
+                i.fas.fa-calendar-alt.me-1
+                span A rejoint Mars 2024
+
+        .profile-stats.d-flex.mb-4
+            .me-4
+                strong.me-1 123
+                span.text-muted abonnements
+            .me-4
+                strong.me-1 456
+                span.text-muted abonnés
+            .me-4
+                strong.me-1 789
+                span.text-muted tweets
+
+        .profile-navigation.border-bottom
+            ul.nav.nav-tabs
+                li.nav-item
+                    a.nav-link.active(href="/profile/johndoe") Tweets
+                li.nav-item
+                    a.nav-link(href="/profile/johndoe/replies") Réponses
+                li.nav-item
+                    a.nav-link(href="/profile/johndoe/media") Médias
+                li.nav-item
+                    a.nav-link(href="/profile/johndoe/likes") J'aime
+
+    .profile-content.mt-3
+        block profileContent
+            include ../tweets/tweet-list.pug

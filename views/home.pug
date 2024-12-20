@@ -1,0 +1,32 @@
+extends layout.pug
+
+block sidebar
+    .list-group
+        a.list-group-item.list-group-item-action(href="/")
+            i.fas.fa-home.me-2
+            | Accueil
+        a.list-group-item.list-group-item-action(href="/explore")
+            i.fas.fa-hashtag.me-2
+            | Explorer
+        a.list-group-item.list-group-item-action(href="/notifications")
+            i.fas.fa-bell.me-2
+            | Notifications
+        a.list-group-item.list-group-item-action(href="/messages")
+            i.fas.fa-envelope.me-2
+            | Messages
+
+block content
+    // Formulaire pour nouveau tweet
+    include includes/tweets/tweet-form.pug
+
+    // Liste des tweets
+    include includes/tweets/tweet-list.pug
+
+block rightSidebar
+    .card
+        .card-body
+            h5.card-title Tendances pour vous
+            .trending-topic
+                p #JavaScript
+                p #WebDevelopment
+                p #Twitter
