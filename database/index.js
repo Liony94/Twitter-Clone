@@ -6,9 +6,14 @@ const options = {
   socketTimeoutMS: 45000,
 };
 
-mongoose
-  .connect(process.env.MONGODB_URI, options)
-  .then(() => {
-    console.log("connexion OK !");
-  })
-  .catch((err) => console.log(err));
+async function connectDB() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, options);
+    console.log("Connexion à la base de données établie");
+  } catch (err) {
+    console.error("Erreur de connexion à la base de données:", err);
+    throw err;
+  }
+}
+
+module.exports = connectDB();

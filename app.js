@@ -69,17 +69,32 @@ app.use("/api", apiRouter);
 app.use("/auth", authRoutes);
 app.use("/messages", messagesRoutes);
 
-// Gestion des erreurs
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
+// Gestion des erreurs 404
+app.use((req, res, next) => {
+  res.status(404).render("error", {
+    message: "Page non trouvée",
+    error: { status: 404 },
+  });
 });
 
-// Démarrage du serveur
+// Gestion des erreurs 500
+app.use((err, req, res, next) => {
+  console.error("Erreur serveur:", err);
+  res.status(err.status || 500).render("error", {
+    message: err.message || "Une erreur est survenue",
+    error: process.env.NODE_ENV === "development" ? err : {},
+  });
+});
+
+// Modification du démarrage du serveur
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  require("./database");
+  // Connexion à la base de données avec gestion d'erreur
+  require("./database").catch((err) => {
+    console.error("Erreur de connexion à la base de données:", err);
+    process.exit(1);
+  });
 });
 
 module.exports = app;

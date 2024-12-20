@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  .container.mt-5
+    .row
+      .col-md-6.offset-md-3
+        .card
+          .card-body.text-center
+            h1.display-4= error.status || 500
+            h2.mb-4= message
+            if error.stack && process.env.NODE_ENV === 'development'
+              pre.text-left.bg-light.p-3
+                code= error.stack
+            a.btn.btn-primary.mt-3(href="/") Retour à l'accueil 
